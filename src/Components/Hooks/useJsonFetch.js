@@ -3,19 +3,24 @@ import React, { useState, useEffect } from 'react';
 export default function useJsonFetch(url, opts) {
   const [ data, setData ] = useState();
   const [ error, setError ] = useState();
-  const [ loading, setLoading ] = useState(false);
-
+  const [ loading, setLoading ] = useState();
+  const [ result, setResult ] = useState();
+  
   useEffect(() => {
-  	const fetchData = async (url, opts) => {
-      const response = await fetch(url);
-      const body = await response.json();
-      
-      body.then((value) => {
-      	if(value.status === 'Internal Error'){
-      		setError(value.status);
-      	}
-
-      })
+  	const fetchFunc = async (url, opts) => {
+      const response = await fetch(url, opts)
+      return response.json();
   	}
-  })
+    fetchFunc(url, opts)
+    .then((data) => setResult(data));
+    console.log(result);
+    if(url.includes('/data')){
+          setData(result.status);
+      } else if(url.includes('/error')){
+          setError(result.status)
+      } else if(url.includes('/loading')){
+          setLoading(result.status)
+      }
+  },[])
+  return[data, error, loading]
 }
