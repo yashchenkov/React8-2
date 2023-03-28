@@ -2,9 +2,11 @@ import React from 'react';
 import useJsonFetch from './Hooks/useJsonFetch';
 
 export default function Data() {
-  const error = useJsonFetch('http://localhost:7070/error', {method: 'GET'});
+  const [data, error, loading] = useJsonFetch('http://localhost:7070/error', {method: 'GET'});
 
-  return (
-  	<div>{error.error}</div>
-  	)
+  if(error && !loading) {
+    return (
+      <div>Ошибка</div>
+    )
+  }
 }
